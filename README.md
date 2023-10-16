@@ -20,10 +20,12 @@
 ```
 USING YARN (Recommend)
 $ yarn install
+$ docker compose -f ./docker/docker-compose-localhost.yml up -d (localhost environment)
 $ yarn start
 
 USING NPM
 $ npm i OR npm i --legacy-peer-deps
+$ docker compose -f ./docker/docker-compose-localhost.yml up -d (localhost environment)
 $ npm start
 ```
 

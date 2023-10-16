@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7.0.5
+    container_name: nest-boilerplate-v2-localhost-redis-container
+    ports:
+      - '6379:6379'
+    labels:
+      - 'name=redis'
+      - 'mode=standalone'
+    command: redis-server --port 6379
+
+  postgresql:
+    image: postgres:latest
+    container_name: nest-boilerplate-v2-localhost-postgresql-container
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test1234
+      POSTGRES_DB: nest-boilerplate-v2
+    volumes:
+      - postgresql-volume:/var/lib/postgresql/data
+
+volumes:
+  postgresql-volume:
