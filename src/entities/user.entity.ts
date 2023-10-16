@@ -1,7 +1,7 @@
 import { IsEmail, IsOptional, IsUrl, Length, Matches, IsString } from 'class-validator';
-import * as regex from '../common/regex';
+import * as regex from '@common/regex';
 import { Column, Entity } from 'typeorm';
-import { CoreEntity } from './core.entity';
+import { CoreEntity } from '@entities/core.entity';
 
 @Entity({ name: 'user' })
 export class User extends CoreEntity {
