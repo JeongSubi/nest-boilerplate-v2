@@ -12,6 +12,7 @@ import http from 'http';
 import path from 'path';
 import { createClient, RedisClientType } from 'redis';
 import { SessionStore } from '@common/types';
+import createSwagger from './swagger';
 
 export const server: Express = express();
 export let application: NestExpressApplication = null;
@@ -121,6 +122,7 @@ function createServer(): void {
 
 async function swaggerInitialize(): Promise<void> {
   if (process.env.NODE_ENV !== 'production') {
+    await createSwagger(application);
   }
 }
 
