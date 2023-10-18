@@ -15,13 +15,13 @@ export class User extends CoreEntity {
   name: string;
 
   @IsString()
-  @Length(1, 20)
-  @Column({ length: 20 })
+  @Length(1, 200)
+  @Column({ length: 200 })
   salt: string;
 
   @Matches(regex.password)
-  @Length(1, 20)
-  @Column({ length: 20 })
+  @Length(1, 200)
+  @Column({ length: 200 })
   password: string;
 
   @Matches(regex.phone)

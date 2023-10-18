@@ -17,7 +17,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./__test__/jest-e2e.json"
+    "test:e2e": "jest --config ./__test__/jest-e2e.json",
+    "typeorm:dev": "cross-env NODE_ENV=development node --require ts-node/register --require tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "typeorm:prod": "cross-env NODE_ENV=production node --require ts-node/register --require tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "seed": "cross-env NODE_ENV=localhost node -r ts-node/register -r tsconfig-paths/register libs/database/src/generate-sample-data/generate-sample-data.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.429.0",
