@@ -11,6 +11,7 @@ import configuration from '@src/config/index';
 import Joi from 'joi';
 import { UsersModule } from '@modules/users/users.module';
 import { User } from '@entities/user.entity';
+import { AuthModule } from '@modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { User } from '@entities/user.entity';
     }),
     TypeOrmModule.forFeature([User]),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [],
