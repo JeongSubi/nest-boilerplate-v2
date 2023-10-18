@@ -18,6 +18,21 @@ export = {
     privateKey: 'string',
     publicKey: 'string',
   },
+  aws: {
+    region: 'ap-northeast-2',
+    ec2Target: 'ec2Target',
+    secrets: {
+      rds: 'rds',
+      rsa: {
+        public: 'publicKey',
+        private: 'privateKey',
+      },
+    },
+    tempBucket: 'tempBucket',
+    cloudfront: 'cloudfront',
+    bucket: 'bucket',
+    bucketPath: '',
+  },
   redis: {
     url: 'redis://localhost:6379',
   },
