@@ -12,6 +12,7 @@ import Joi from 'joi';
 import { UsersModule } from '@modules/users/users.module';
 import { User } from '@entities/user.entity';
 import { AuthModule } from '@modules/auth/auth.module';
+import { ContentsModule } from '@modules/contents/contents.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { AuthModule } from '@modules/auth/auth.module';
     TypeOrmModule.forFeature([User]),
     UsersModule,
     AuthModule,
+    ContentsModule,
   ],
   controllers: [AppController],
   providers: [],
