@@ -7,7 +7,7 @@ export default setSeederFactory(User, (faker: Faker) => {
     /**
      * email login user - password: 'test123!'
      */
-    name: faker.person.fullName(),
+    name: faker.person.lastName(),
     email: faker.internet.email(),
     phone: faker.phone.number(),
     profileImage: faker.image.url(),
