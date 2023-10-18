@@ -1,8 +1,11 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from '@src/app.module';
+import { startApplication } from '@src/app';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  await app.listen(4000);
-}
-bootstrap();
+startApplication()
+  .then((): void => {
+    /* eslint-disable */
+    console.log(`Process Start!!!`);
+  })
+  .catch((error: unknown): void => {
+    console.log(`Process Start Error!!! ${error}`);
+    /* eslint-enable */
+  });
