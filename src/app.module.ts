@@ -13,6 +13,7 @@ import { UsersModule } from '@modules/users/users.module';
 import { User } from '@entities/user.entity';
 import { AuthModule } from '@modules/auth/auth.module';
 import { ContentsModule } from '@modules/contents/contents.module';
+import { Content } from '@entities/content.entity';
 
 @Module({
   imports: [
@@ -39,7 +40,7 @@ import { ContentsModule } from '@modules/contents/contents.module';
         return { ...ret, entities: [`${__dirname}/entities/*.entity{.ts,.js}`] };
       },
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Content]),
     UsersModule,
     AuthModule,
     ContentsModule,
