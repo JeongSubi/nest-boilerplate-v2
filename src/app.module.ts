@@ -14,6 +14,11 @@ import { User } from '@entities/user.entity';
 import { AuthModule } from '@modules/auth/auth.module';
 import { ContentsModule } from '@modules/contents/contents.module';
 import { Content } from '@entities/content.entity';
+import { AuthenticationGuard } from '@guards/authentication.guard';
+import { APP_GUARD } from '@nestjs/core';
+import { UsersRepository } from '@repositories/users.repository';
+import { ContentsRepository } from '@repositories/contents.repository';
+import { AuthorizationGuard } from '@guards/authorization.guard';
 
 @Module({
   imports: [
@@ -46,6 +51,17 @@ import { Content } from '@entities/content.entity';
     ContentsModule,
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [
+    UsersRepository,
+    ContentsRepository,
+    {
+      provide: APP_GUARD,
+      useClass: AuthenticationGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthorizationGuard,
+    },
+  ],
 })
 export class AppModule {}
