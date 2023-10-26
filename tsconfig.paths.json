@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@src/*": ["src/*"],
+      "@entities/*": ["src/entities/*"],
+      "@common/*": ["src/common/*"],
+      "@config/*": ["src/config/*"],
+      "@decorators/*": ["src/decorators/*"],
+      "@exceptions/*": ["src/exceptions/*"],
+      "@guards/*": ["src/guards/*"],
+      "@modules/*": ["src/modules/*"],
+      "@libs/*": ["libs/*"],
+      "@repositories/*": ["src/repositories/*"],
+      "@app/aws/*": ["libs/aws/src/*"],
+      "@app/database/*": ["libs/database/src/*"],
+      "@app/logger/*": ["libs/logger/src/*"],
+      "@app/middlewares/*": ["libs/middlewares/src/*"]
+    }
+  }
+}

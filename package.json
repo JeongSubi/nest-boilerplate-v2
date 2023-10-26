@@ -7,9 +7,9 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\" \"__test__/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "start:dev": "cross-env NODE_ENV=localhost nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -17,14 +17,37 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./__test__/jest-e2e.json",
+    "typeorm:dev": "cross-env NODE_ENV=development node --require ts-node/register --require tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "typeorm:prod": "cross-env NODE_ENV=production node --require ts-node/register --require tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "seed": "cross-env NODE_ENV=localhost node -r ts-node/register -r tsconfig-paths/register libs/database/src/generate-sample-data/generate-sample-data.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.429.0",
+    "@aws-sdk/client-secrets-manager": "^3.436.0",
+    "@aws-sdk/s3-presigned-post": "^3.429.0",
     "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^10.0.0",
+    "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/swagger": "^7.1.14",
+    "@nestjs/typeorm": "^10.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
+    "connect-redis": "^7.1.0",
+    "cookie-parser": "^1.4.6",
+    "cross-env": "^7.0.3",
+    "express-basic-auth": "^1.2.1",
+    "helmet": "^7.0.0",
+    "joi": "^17.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.3",
+    "redis": "^4.6.10",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "typeorm": "^0.3.17",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
@@ -47,6 +70,7 @@
     "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
+    "typeorm-extension": "^3.0.2",
     "typescript": "^5.1.3"
   },
   "jest": {
