@@ -15,10 +15,12 @@ import { AuthModule } from '@modules/auth/auth.module';
 import { ContentsModule } from '@modules/contents/contents.module';
 import { Content } from '@entities/content.entity';
 import { AuthenticationGuard } from '@guards/authentication.guard';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { UsersRepository } from '@repositories/users.repository';
 import { ContentsRepository } from '@repositories/contents.repository';
 import { AuthorizationGuard } from '@guards/authorization.guard';
+import { ResponseInterceptor } from '@app/middlewares/interceptors/response.interceptor';
+import { HttpExceptionFilter } from '@app/middlewares/filters/http-exception.filter';
 
 @Module({
   imports: [
@@ -61,6 +63,14 @@ import { AuthorizationGuard } from '@guards/authorization.guard';
     {
       provide: APP_GUARD,
       useClass: AuthorizationGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
     },
   ],
 })
