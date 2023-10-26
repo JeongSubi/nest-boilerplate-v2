@@ -1,4 +1,4 @@
-import { ValidationPipe, ClassSerializerInterceptor, Logger, LoggerService } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { ExpressAdapter, NestExpressApplication } from '@nestjs/platform-express';
@@ -13,6 +13,7 @@ import path from 'path';
 import { createClient, RedisClientType } from 'redis';
 import { SessionStore } from '@common/types';
 import createSwagger from './swagger';
+import { CustomTransformPipe } from '@app/middlewares/pipes/CustomTransformPipe';
 
 export const server: Express = express();
 export let application: NestExpressApplication = null;
@@ -102,6 +103,7 @@ function onMiddlewareHandler(): void {
     }),
   );
   application.useGlobalInterceptors(new ClassSerializerInterceptor(application.get(Reflector)));
+  application.useGlobalPipes(new CustomTransformPipe());
 }
 
 async function createApplication(): Promise<void> {
