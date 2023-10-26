@@ -6,6 +6,7 @@ interface IPasswordHash {
 }
 
 const passwordIterations = {
+  admin: 133342,
   user: 123342,
 };
 
