@@ -39,13 +39,9 @@ import { JwtModule, JwtModuleOptions } from '@libs/jwt/src';
     JwtModule.forRootAsync({
       imports: [AwsModule],
       inject: [ConfigService, AwsService],
-      useFactory: async (
-        configService: ConfigService,
-        awsService: AwsService,
-      ): Promise<JwtModuleOptions> => {
-        const rsa = configService.get('aws.secrets.rsa');
-        const privateKey = (await awsService.getSecretValue(rsa.private)) ?? 'privateKey';
-        const publicKey = (await awsService.getSecretValue(rsa.public)) ?? 'publicKey';
+      useFactory: async (configService: ConfigService): Promise<JwtModuleOptions> => {
+        const privateKey = configService.get('aws.secrets.privateKey');
+        const publicKey = configService.get('aws.secrets.publicKey');
         return { privateKey, publicKey };
       },
     }),
@@ -55,13 +51,8 @@ import { JwtModule, JwtModuleOptions } from '@libs/jwt/src';
       useFactory: async (
         dbService: DatabaseService,
         configService: ConfigService,
-        awsService: AwsService,
       ): Promise<TypeOrmModuleOptions> => {
-        let options = configService.get('database');
-        const secretName = configService.get('aws.secrets.rds');
-        const { username, password, host, dbname, port } =
-          (await awsService.getSecretValue(secretName)) ?? options;
-        options = { host, port, username, password, database: dbname, ...options };
+        const options = configService.get('database');
         const ret = await dbService.createTypeOrmOptions(options);
         return { ...ret, entities: [`${__dirname}/entities/*.entity{.ts,.js}`] };
       },
