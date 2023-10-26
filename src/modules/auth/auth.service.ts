@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PostAuthRegisterReqDto } from '@modules/auth/dto/req/post-auth-register.req.dto';
 import { DataSource } from 'typeorm';
-import { DuplicatedException } from '@common/exceptions';
-import { createPasswordHash, passwordIterations } from '@common/code';
+import { DuplicatedException, UserNotFoundException } from '@common/exceptions';
+import { createPasswordHash, passwordIterations, verifyPassword } from '@common/code';
 import { UsersRepository } from '@repositories/users.repository';
 import { User } from '@entities/user.entity';
 
@@ -25,7 +25,7 @@ export class AuthService {
     agreeReceiveEmail,
   }: PostAuthRegisterReqDto): Promise<string> {
     try {
-      // await this.verifyDuplicateUserEmail(email);
+      await this.verifyDuplicateUserEmail(email);
 
       const passwordHash = createPasswordHash(password, passwordIterations.user);
       const user: User = new User({
@@ -61,5 +61,25 @@ export class AuthService {
       return true;
     }
     throw new DuplicatedException('duplicatedEmail');
+  }
+
+  async validateUserByEmail(email: string, password: string) {
+    try {
+      const user: User = await this.usersRepository.findOne({
+        where: { email },
+      });
+
+      if (user) {
+        if (verifyPassword(password, user.password, user.salt, passwordIterations.user)) {
+          return { id: user.id, salt: user.salt };
+        }
+
+        throw new BadRequestException('invalid_account');
+      }
+
+      throw new UserNotFoundException();
+    } catch (error) {
+      throw error;
+    }
   }
 }
