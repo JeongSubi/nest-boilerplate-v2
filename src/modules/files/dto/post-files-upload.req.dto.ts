@@ -1,4 +1,4 @@
-import { FileUploadType } from '@common/files/dto/get-files-upload.req.dto';
+import { FileUploadType } from '@modules/files/dto/get-files-upload.req.dto';
 import { IsEnum, IsString } from 'class-validator';
 
 export enum PostFilesUploadReqDtoKind {

@@ -1,5 +1,5 @@
 import { AwsModule } from '@app/aws/aws.module';
-import { FilesController } from '@common/files/files.controller';
+import { FilesController } from '@modules/files/files.controller';
 import { Module } from '@nestjs/common';
 
 @Module({
