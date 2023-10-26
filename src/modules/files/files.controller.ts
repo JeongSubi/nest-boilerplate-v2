@@ -1,8 +1,8 @@
 import { AwsService } from '@app/aws/aws.service';
-import { GetFilesUploadReqDto } from '@common/files/dto/get-files-upload.req.dto';
-import { GetFilesUploadResDto } from '@common/files/dto/get-files-upload.res.dto';
-import { PostFilesUploadReqDto } from '@common/files/dto/post-files-upload.req.dto';
-import { PostFilesUploadResDto } from '@common/files/dto/post-files-upload.res.dto';
+import { GetFilesUploadReqDto } from '@modules/files/dto/get-files-upload.req.dto';
+import { GetFilesUploadResDto } from '@modules/files/dto/get-files-upload.res.dto';
+import { PostFilesUploadReqDto } from '@modules/files/dto/post-files-upload.req.dto';
+import { PostFilesUploadResDto } from '@modules/files/dto/post-files-upload.res.dto';
 import { Public } from '@decorators/public.decorator';
 import { BadRequestException, Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
