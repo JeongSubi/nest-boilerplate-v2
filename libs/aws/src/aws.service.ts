@@ -5,6 +5,11 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import {
+  GetSecretValueCommand,
+  GetSecretValueCommandOutput,
+  SecretsManagerClient,
+} from '@aws-sdk/client-secrets-manager';
+import {
   createPresignedPost,
   PresignedPost,
   PresignedPostOptions,
@@ -27,10 +32,29 @@ interface AwsConfig {
 export class AwsService {
   private readonly awsConfig: AwsConfig;
   private readonly s3Client: S3Client;
+  private readonly secretsManagerClient: SecretsManagerClient;
 
   constructor(private configService: ConfigService) {
     this.awsConfig = this.configService.get<AwsConfig>('aws', { infer: true });
     this.s3Client = new S3Client({ region: this.awsConfig.region });
+    this.secretsManagerClient = new SecretsManagerClient({ region: this.awsConfig.region });
+  }
+
+  async getSecretValue(secretName: string): Promise<any> {
+    try {
+      const command: GetSecretValueCommand = new GetSecretValueCommand({ SecretId: secretName });
+      const data: GetSecretValueCommandOutput = await this.secretsManagerClient.send(command);
+      if (data.SecretString) {
+        try {
+          return JSON.parse(data.SecretString);
+        } catch (error) {
+          return data.SecretString;
+        }
+      }
+      throw new Error('NoSecretString');
+    } catch (error) {
+      throw error;
+    }
   }
 
   async copyTempObject(path: string, prefix: string = ''): Promise<string> {

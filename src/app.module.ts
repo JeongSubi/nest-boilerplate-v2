@@ -21,6 +21,7 @@ import { ContentsRepository } from '@repositories/contents.repository';
 import { AuthorizationGuard } from '@guards/authorization.guard';
 import { ResponseInterceptor } from '@app/middlewares/interceptors/response.interceptor';
 import { HttpExceptionFilter } from '@app/middlewares/filters/http-exception.filter';
+import { JwtModule, JwtModuleOptions } from '@libs/jwt/src';
 
 @Module({
   imports: [
@@ -35,14 +36,32 @@ import { HttpExceptionFilter } from '@app/middlewares/filters/http-exception.fil
       }),
     }),
     LoggerModule.register({ level: process.env.NODE_ENV === 'production' ? 'info' : 'debug' }),
+    JwtModule.forRootAsync({
+      imports: [AwsModule],
+      inject: [ConfigService, AwsService],
+      useFactory: async (
+        configService: ConfigService,
+        awsService: AwsService,
+      ): Promise<JwtModuleOptions> => {
+        const rsa = configService.get('aws.secrets.rsa');
+        const privateKey = (await awsService.getSecretValue(rsa.private)) ?? 'privateKey';
+        const publicKey = (await awsService.getSecretValue(rsa.public)) ?? 'publicKey';
+        return { privateKey, publicKey };
+      },
+    }),
     TypeOrmModule.forRootAsync({
       imports: [DatabaseModule, AwsModule],
       inject: [DatabaseService, ConfigService, AwsService],
       useFactory: async (
         dbService: DatabaseService,
         configService: ConfigService,
+        awsService: AwsService,
       ): Promise<TypeOrmModuleOptions> => {
-        const options = configService.get('database');
+        let options = configService.get('database');
+        const secretName = configService.get('aws.secrets.rds');
+        const { username, password, host, dbname, port } =
+          (await awsService.getSecretValue(secretName)) ?? options;
+        options = { host, port, username, password, database: dbname, ...options };
         const ret = await dbService.createTypeOrmOptions(options);
         return { ...ret, entities: [`${__dirname}/entities/*.entity{.ts,.js}`] };
       },
