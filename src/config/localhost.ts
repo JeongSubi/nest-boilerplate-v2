@@ -22,11 +22,9 @@ export = {
     region: 'ap-northeast-2',
     ec2Target: 'ec2Target',
     secrets: {
+      publicKey: 'publicKey',
+      private: 'private',
       rds: 'rds',
-      rsa: {
-        public: 'publicKey',
-        private: 'privateKey',
-      },
     },
     tempBucket: 'tempBucket',
     cloudfront: 'cloudfront',
