@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Req, Session } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Req, Res, Session } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from '@modules/users/users.service';
@@ -9,6 +9,7 @@ import { PostAuthRegisterReqDto } from '@modules/auth/dto/req/post-auth-register
 import { GetUserResDto } from '@modules/users/dto/res/get-user.res.dto';
 import { PostAuthResDto } from '@modules/auth/dto/res/post-auth.res.dto';
 import { PostAuthReqDto } from '@modules/auth/dto/req/post-auth.req.dto';
+import { Response } from 'express';
 
 @ApiTags('인증')
 @Controller('auth')
@@ -60,6 +61,17 @@ export class AuthController {
 
     this.setSession({ ...user, salt }, session, request, data.remember);
     return user;
+  }
+
+  @Public()
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: HttpStatus.OK })
+  @ApiOperation({ summary: '로그아웃' })
+  logout(@Res() response: Response, @Session() session: SessionItem): void {
+    session.destroy((): void => {
+      response.status(HttpStatus.OK).send();
+    });
   }
 
   private setSession(
