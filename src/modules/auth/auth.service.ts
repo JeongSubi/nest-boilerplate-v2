@@ -113,4 +113,15 @@ export class AuthService {
 
     return passwordHash.salt;
   }
+
+  async verifyDuplicate(email: string): Promise<boolean> {
+    try {
+      await this.usersRepository.findOneOrFail({
+        where: { email },
+      });
+    } catch (error) {
+      return true;
+    }
+    throw new ConflictException('duplicate_email');
+  }
 }
