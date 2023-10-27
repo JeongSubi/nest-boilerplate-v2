@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Patch,
   Post,
+  Query,
   Req,
   Res,
   Session,
@@ -21,6 +23,7 @@ import { PostAuthResDto } from '@modules/auth/dto/res/post-auth.res.dto';
 import { PostAuthReqDto } from '@modules/auth/dto/req/post-auth.req.dto';
 import { Response } from 'express';
 import { PutAuthReqDto } from '@modules/auth/dto/req/put-auth.req.dto';
+import { GetAuthEmailReqDto } from '@modules/auth/dto/req/get-auth-email.req.dto';
 
 @ApiTags('인증')
 @Controller('auth')
@@ -91,6 +94,15 @@ export class AuthController {
   @ApiResponse({ status: HttpStatus.OK })
   async patchAuth(@Session() session: SessionItem, @Body() data: PutAuthReqDto): Promise<void> {
     session.salt = await this.authService.changePassword({ ...data, userId: session.userId });
+  }
+
+  @Public()
+  @Get('confirm-duplicate-email')
+  @ApiOperation({ summary: '이메일 중복 확인' })
+  @ApiResponse({ status: HttpStatus.OK })
+  @ApiResponse({ status: HttpStatus.CONFLICT, description: '이메일 중복' })
+  async getEmail(@Query() params: GetAuthEmailReqDto): Promise<boolean> {
+    return await this.authService.verifyDuplicate(params.email);
   }
 
   private setSession(
