@@ -1,8 +1,18 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Req, Res, Session } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Patch,
+  Post,
+  Req,
+  Res,
+  Session,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from '@modules/users/users.service';
-import { Public } from '@src/decorators';
+import { Auth, Public } from '@src/decorators';
 import { RequestType, SessionInputData, SessionItem } from '@common/types';
 import { PostAuthRegisterResDto } from '@modules/auth/dto/res/post-auth-register.res.dto';
 import { PostAuthRegisterReqDto } from '@modules/auth/dto/req/post-auth-register.req.dto';
@@ -10,6 +20,7 @@ import { GetUserResDto } from '@modules/users/dto/res/get-user.res.dto';
 import { PostAuthResDto } from '@modules/auth/dto/res/post-auth.res.dto';
 import { PostAuthReqDto } from '@modules/auth/dto/req/post-auth.req.dto';
 import { Response } from 'express';
+import { PutAuthReqDto } from '@modules/auth/dto/req/put-auth.req.dto';
 
 @ApiTags('인증')
 @Controller('auth')
@@ -72,6 +83,14 @@ export class AuthController {
     session.destroy((): void => {
       response.status(HttpStatus.OK).send();
     });
+  }
+
+  @Patch('change-password')
+  @Auth({ type: 'user' })
+  @ApiOperation({ summary: '패스워드 변경' })
+  @ApiResponse({ status: HttpStatus.OK })
+  async patchAuth(@Session() session: SessionItem, @Body() data: PutAuthReqDto): Promise<void> {
+    session.salt = await this.authService.changePassword({ ...data, userId: session.userId });
   }
 
   private setSession(

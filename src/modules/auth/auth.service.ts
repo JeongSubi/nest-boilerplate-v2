@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { PostAuthRegisterReqDto } from '@modules/auth/dto/req/post-auth-register.req.dto';
 import { DataSource } from 'typeorm';
 import { DuplicatedException, UserNotFoundException } from '@common/exceptions';
 import { createPasswordHash, passwordIterations, verifyPassword } from '@common/code';
 import { UsersRepository } from '@repositories/users.repository';
 import { User } from '@entities/user.entity';
+import { PutAuthReqDto } from '@modules/auth/dto/req/put-auth.req.dto';
 
 @Injectable()
 export class AuthService {
@@ -68,7 +69,6 @@ export class AuthService {
       const user: User = await this.usersRepository.findOne({
         where: { email },
       });
-
       if (user) {
         if (verifyPassword(password, user.password, user.salt, passwordIterations.user)) {
           return { id: user.id, salt: user.salt };
@@ -81,5 +81,36 @@ export class AuthService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async changePassword({
+    password,
+    newPassword,
+    userId,
+  }: PutAuthReqDto & { userId: string }): Promise<string> {
+    if (password === newPassword) throw new BadRequestException('same_password');
+
+    const user: User = await this.usersRepository.findOne({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new ConflictException('not_found_user');
+    }
+
+    if (!verifyPassword(password, user.password, user.salt, passwordIterations.user)) {
+      throw new BadRequestException('wrong_password');
+    }
+
+    const passwordHash = createPasswordHash(newPassword, passwordIterations.user);
+
+    await this.usersRepository.update(
+      { id: userId },
+      { password: passwordHash.password, salt: passwordHash.salt },
+    );
+
+    return passwordHash.salt;
   }
 }
