@@ -4,12 +4,14 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Patch,
   Post,
   Query,
   Req,
   Res,
   Session,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -103,6 +105,27 @@ export class AuthController {
   @ApiResponse({ status: HttpStatus.CONFLICT, description: '이메일 중복' })
   async getEmail(@Query() params: GetAuthEmailReqDto): Promise<boolean> {
     return await this.authService.verifyDuplicate(params.email);
+  }
+
+  @Public()
+  @Get()
+  @ApiOperation({ summary: '로그인 세션 확인' })
+  @ApiResponse({ status: HttpStatus.OK, type: PostAuthResDto })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, description: '세션 유저 아이디 정보 없음' })
+  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: '세션 만료' })
+  async getAuth(@Session() session: SessionItem): Promise<PostAuthResDto> {
+    if (!session.userId) {
+      throw new NotFoundException('not_found_session_user_id');
+    }
+
+    const user: GetUserResDto = await this.usersService.findOne(session.userId);
+
+    if (user) return user;
+    else if (session.userId) {
+      session.destroy((): void => {
+        new UnauthorizedException('invalid_session');
+      });
+    }
   }
 
   private setSession(
