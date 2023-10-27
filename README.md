@@ -10,9 +10,16 @@
 
 ## sample API
 ```
-[user]
-- 회원가입: 
-- 회원탈퇴: 
+[auth]
+- 회원가입: (Post) http://localhost:4000/auth/register
+- 로그인: (Post) http://localhost:4000/auth/login
+- 로그아웃 : (Post) http://localhost:4000/auth/logout
+- 패스워드 변경: (Patch) http://localhost:4000/auth/change-password
+- 이메일 중복 확인: (Get) http://localhost:4000/auth/confirm-duplicate-email
+- 로그인 세션 확인: (Get) http://localhost:4000/auth
+
+[file]
+- 파일업로드: (Post) http://localhost:4000/files/upload
 ```
 
 ## Getting Started
