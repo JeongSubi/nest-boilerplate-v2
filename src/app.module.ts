@@ -3,7 +3,7 @@ import { AwsService } from '@app/aws/aws.service';
 import { DatabaseModule } from '@app/database/database.module';
 import { DatabaseService } from '@app/database/database.service';
 import { LoggerModule } from '@app/logger/logger.module';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AppController } from '@src/app.controller';
@@ -22,6 +22,7 @@ import { AuthorizationGuard } from '@guards/authorization.guard';
 import { ResponseInterceptor } from '@app/middlewares/interceptors/response.interceptor';
 import { HttpExceptionFilter } from '@app/middlewares/filters/http-exception.filter';
 import { JwtModule, JwtModuleOptions } from '@libs/jwt/src';
+import { AssignIdMiddleware } from '@app/middlewares/middlewares/assign-id.middleware';
 
 @Module({
   imports: [
@@ -84,4 +85,8 @@ import { JwtModule, JwtModuleOptions } from '@libs/jwt/src';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(AssignIdMiddleware).forRoutes('*');
+  }
+}

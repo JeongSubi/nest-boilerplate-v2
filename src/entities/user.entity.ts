@@ -1,4 +1,13 @@
-import { IsEmail, IsEnum, IsOptional, IsString, IsUrl, Length, Matches } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsEnum,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Length,
+  Matches,
+} from 'class-validator';
 import * as regex from '@common/regex';
 import { Column, Entity } from 'typeorm';
 import { CoreEntity } from '@entities/core.entity';
@@ -38,7 +47,6 @@ export class User extends CoreEntity {
   role: UserRole;
 
   @ApiProperty({ minLength: 1, maxLength: 200 })
-  @Matches(regex.password)
   @Length(1, 200)
   @Column({ length: 200 })
   password: string;
@@ -54,6 +62,21 @@ export class User extends CoreEntity {
   @IsOptional()
   @Column({ nullable: true, name: 'profile_image' })
   profileImage?: string;
+
+  @IsBoolean()
+  @ApiProperty({ format: 'boolean' })
+  @Column({ name: 'agree_marketing', default: true })
+  agreeMarketing: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ format: 'boolean' })
+  @Column({ name: 'agree_notification', default: true })
+  agreeNotification: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ format: 'boolean' })
+  @Column({ name: 'agree_receive_email', default: true })
+  agreeReceiveEmail: boolean;
 
   constructor(partial: Partial<User>) {
     super();

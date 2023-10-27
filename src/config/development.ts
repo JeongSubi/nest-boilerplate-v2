@@ -18,6 +18,9 @@ export = {
     privateKey: 'string',
     publicKey: 'string',
   },
+  sentry: {
+    dsn: 'dsn',
+  },
   aws: {
     region: 'ap-northeast-2',
     ec2Target: 'ec2Target',

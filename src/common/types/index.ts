@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { GetUserResDto } from '@modules/users/dto/res/get-user.res.dto';
 
 export interface SessionStore {
   userSession: (request: Request, response: Response, next: () => void) => void;
@@ -17,4 +18,13 @@ export interface SessionItem {
     maxAge: number;
   };
   destroy: (error) => void;
+}
+
+export interface SessionInputData extends GetUserResDto {
+  salt: string;
+}
+
+export interface RequestType extends Request {
+  session: SessionItem;
+  ip: string;
 }

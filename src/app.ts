@@ -14,6 +14,8 @@ import { createClient, RedisClientType } from 'redis';
 import { SessionStore } from '@common/types';
 import createSwagger from './swagger';
 import { CustomTransformPipe } from '@app/middlewares/pipes/CustomTransformPipe';
+import * as Sentry from '@sentry/node';
+import { SentryInterceptor } from '@app/middlewares/interceptors/sentry.interceptor';
 
 export const server: Express = express();
 export let application: NestExpressApplication = null;
@@ -103,6 +105,7 @@ function onMiddlewareHandler(): void {
     }),
   );
   application.useGlobalInterceptors(new ClassSerializerInterceptor(application.get(Reflector)));
+  application.useGlobalInterceptors(new SentryInterceptor());
   application.useGlobalPipes(new CustomTransformPipe());
 }
 
@@ -122,6 +125,19 @@ function createServer(): void {
   });
 }
 
+function sentryInitialize(): void {
+  if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development') {
+    const configService: ConfigService = application.get(ConfigService);
+
+    const { dsn } = configService.get('sentry');
+
+    Sentry.init({
+      includeLocalVariables: true,
+      dsn,
+    });
+  }
+}
+
 async function swaggerInitialize(): Promise<void> {
   if (process.env.NODE_ENV !== 'production') {
     await createSwagger(application);
@@ -129,6 +145,7 @@ async function swaggerInitialize(): Promise<void> {
 }
 
 async function moduleInitialize(): Promise<void> {
+  sentryInitialize();
   await swaggerInitialize();
 }
 
